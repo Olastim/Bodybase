@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   const { ready, authenticated, user } = usePrivy();
-  const { wallets } = useWallets();
+  const { wallets, ready: walletsReady } = useWallets();
 
   const smartWallet = wallets.find((wallet) => wallet.connectorType === 'privy');
 
@@ -31,7 +31,7 @@ export default function ProfilePage() {
     });
   };
 
-  if (!ready || (ready && !authenticated)) {
+  if (!ready || !authenticated) {
     return (
        <div>
         <h1 className="text-3xl font-bold font-headline">Profile</h1>
@@ -55,7 +55,7 @@ export default function ProfilePage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="walletAddress">Smart Wallet Address</Label>
-            {smartWallet ? (
+            {walletsReady && smartWallet ? (
               <>
                 <div className="flex items-center gap-2">
                   <Input id="walletAddress" value={smartWallet.address} readOnly className="font-mono"/>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
                  <p className="text-xs text-muted-foreground">This is your smart wallet address on the Base network.</p>
               </>
             ) : (
-               <p className="text-lg font-mono p-3 bg-muted rounded-md">Creating your smart wallet...</p>
+               <p className="text-lg font-mono p-3 bg-muted rounded-md animate-pulse">Loading wallet...</p>
             )}
           </div>
         </CardContent>
