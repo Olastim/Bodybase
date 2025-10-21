@@ -1,0 +1,196 @@
+/**
+ * @fileoverview Firestore Security Rules for BodyBase application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model. Each user can only
+ * access and modify their own data, stored under their unique user ID.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profile information.
+ * - /users/{userId}/steps/{stepId}: Stores step data for a user.
+ * - /users/{userId}/foodLogs/{foodLogId}: Stores food log data for a user.
+ * - /users/{userId}/sleepLogs/{sleepLogId}: Stores sleep log data for a user.
+ * - /rewards/{rewardId}: Stores global reward definitions.
+ * - /users/{userId}/userRewards/{userRewardId}: Stores user-specific reward associations.
+ * - /users/{userId}/leaderboardEntries/{leaderboardEntryId}: Stores leaderboard entries for each user.
+ *
+ * Key Security Decisions:
+ * - User data is strictly segregated under /users/{userId} to enforce path-based ownership.
+ * - Subcollections inherit the ownership of their parent user document.
+ * - Global reward definitions in /rewards/{rewardId} are publicly readable.
+ * - User listing is disallowed for privacy.
+ *
+ * Denormalization for Authorization:
+ * - The userId is embedded in the path for all user-specific data, enabling simple ownership checks.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the request is made by a signed-in user.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the authenticated user ID matches the provided user ID.
+     * @param {string} userId - The user ID to compare against the authenticated user's ID.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the authenticated user is the owner of the existing document.
+     * @param {string} userId - The user ID to compare against the authenticated user's ID.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Security rules for user profiles.
+     * @path /users/{userId}
+     * @allow (create) - Authenticated user can create their own profile if the userId matches their auth UID.
+     * @allow (get) - Authenticated user can read their own profile.
+     * @allow (update) - Authenticated user can update their own profile if the userId matches their auth UID.
+     * @allow (delete) - Authenticated user can delete their own profile if the userId matches their auth UID.
+     * @deny (create) - Creating a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // User listing is not allowed.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for steps subcollection.
+     * @path /users/{userId}/steps/{stepId}
+     * @allow (create) - Authenticated user can create steps data in their own profile.
+     * @allow (get) - Authenticated user can read steps data in their own profile.
+     * @allow (update) - Authenticated user can update steps data in their own profile.
+     * @allow (delete) - Authenticated user can delete steps data in their own profile.
+     * @deny (create) - Creating steps data in a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading steps data in a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating steps data in a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting steps data in a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/steps/{stepId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for foodLogs subcollection.
+     * @path /users/{userId}/foodLogs/{foodLogId}
+     * @allow (create) - Authenticated user can create foodLogs data in their own profile.
+     * @allow (get) - Authenticated user can read foodLogs data in their own profile.
+     * @allow (update) - Authenticated user can update foodLogs data in their own profile.
+     * @allow (delete) - Authenticated user can delete foodLogs data in their own profile.
+     * @deny (create) - Creating foodLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading foodLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating foodLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting foodLogs data in a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/foodLogs/{foodLogId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for sleepLogs subcollection.
+     * @path /users/{userId}/sleepLogs/{sleepLogId}
+     * @allow (create) - Authenticated user can create sleepLogs data in their own profile.
+     * @allow (get) - Authenticated user can read sleepLogs data in their own profile.
+     * @allow (update) - Authenticated user can update sleepLogs data in their own profile.
+     * @allow (delete) - Authenticated user can delete sleepLogs data in their own profile.
+     * @deny (create) - Creating sleepLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading sleepLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating sleepLogs data in a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting sleepLogs data in a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/sleepLogs/{sleepLogId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for rewards collection.
+     * @path /rewards/{rewardId}
+     * @allow (get) - Any user can read the global rewards.
+     * @allow (list) - Any user can list the global rewards.
+     * @deny (create) - No user can create a reward.
+     * @deny (update) - No user can update a reward.
+     * @deny (delete) - No user can delete a reward.
+     */
+    match /rewards/{rewardId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Security rules for userRewards subcollection.
+     * @path /users/{userId}/userRewards/{userRewardId}
+     * @allow (create) - Authenticated user can create userRewards data in their own profile.
+     * @allow (get) - Authenticated user can read userRewards data in their own profile.
+     * @allow (update) - Authenticated user can update userRewards data in their own profile.
+     * @allow (delete) - Authenticated user can delete userRewards data in their own profile.
+     * @deny (create) - Creating userRewards data in a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading userRewards data in a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating userRewards data in a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting userRewards data in a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/userRewards/{userRewardId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Security rules for leaderboardEntries subcollection.
+     * @path /users/{userId}/leaderboardEntries/{leaderboardEntryId}
+     * @allow (create) - Authenticated user can create leaderboardEntries data in their own profile.
+     * @allow (get) - Authenticated user can read leaderboardEntries data in their own profile.
+     * @allow (update) - Authenticated user can update leaderboardEntries data in their own profile.
+     * @allow (delete) - Authenticated user can delete leaderboardEntries data in their own profile.
+     * @deny (create) - Creating leaderboardEntries data in a profile with a userId that does not match the auth UID.
+     * @deny (get) - Reading leaderboardEntries data in a profile with a userId that does not match the auth UID.
+     * @deny (update) - Updating leaderboardEntries data in a profile with a userId that does not match the auth UID.
+     * @deny (delete) - Deleting leaderboardEntries data in a profile with a userId that does not match the auth UID.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/leaderboardEntries/{leaderboardEntryId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
