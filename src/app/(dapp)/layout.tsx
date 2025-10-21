@@ -23,7 +23,7 @@ export default function DappLayout({
       <Sidebar collapsible="icon" className="border-r-border/50">
         <SidebarHeader className='p-4'>
           <Link href="/dashboard" className="flex items-center gap-2">
-            <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-neon-primary" />
+            <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-[0_0_12px_hsl(var(--primary))]" />
             <span className="text-xl font-bold text-foreground">BodyBase</span>
           </Link>
         </SidebarHeader>

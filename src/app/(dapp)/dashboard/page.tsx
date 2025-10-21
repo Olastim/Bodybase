@@ -18,7 +18,7 @@ export default function DashboardPage() {
             <Zap className="h-4 w-4 text-accent" />
           </div>
           <div>
-            <div className="text-4xl font-bold text-primary drop-shadow-neon-primary">42,069</div>
+            <div className="text-4xl font-bold text-primary drop-shadow-[0_0_12px_hsl(var(--primary))]">42,069</div>
             <p className="text-xs text-muted-foreground">+2,012 this week</p>
           </div>
         </div>

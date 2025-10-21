@@ -71,6 +71,9 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        'neon-primary': '0 0 12px hsl(var(--primary))',
+      },
       keyframes: {
         'accordion-down': {
           from: {
@@ -99,7 +102,6 @@ export default {
         'float': 'float 4s ease-in-out infinite',
       },
       dropShadow: {
-        'neon-primary': '0 0 12px hsl(var(--primary) / <alpha-value>)',
         'neon-accent': '0 0 12px hsl(var(--accent) / 0.8)',
       }
     },

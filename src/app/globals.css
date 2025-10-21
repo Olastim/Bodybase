@@ -112,7 +112,7 @@
   }
 
   .glass-card:hover {
-    @apply border-primary/40 shadow-neon-primary/20;
+    @apply border-primary/40 shadow-neon-primary shadow-primary/20;
   }
 
   .btn-gradient {

@@ -10,7 +10,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md p-8 space-y-8 glass-card">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
-            <BodyBaseIcon className="w-10 h-10 text-primary drop-shadow-neon-primary" />
+            <BodyBaseIcon className="w-10 h-10 text-primary drop-shadow-[0_0_12px_hsl(var(--primary))]" />
           </Link>
           <h1 className="text-3xl font-bold font-headline">Create Your Account</h1>
           <p className="text-muted-foreground">Start your wellness journey on BodyBase.</p>

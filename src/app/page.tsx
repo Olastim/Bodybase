@@ -131,7 +131,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-lg">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-neon-primary" />
+            <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-[0_0_12px_hsl(var(--primary))]" />
             <span className="text-xl font-bold">BodyBase</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
@@ -140,7 +140,7 @@ export default function LandingPage() {
             <Link href="#testimonials" className="hover:text-primary transition-colors">Testimonials</Link>
             <Link href="#faq" className="hover:text-primary transition-colors">FAQ</Link>
           </nav>
-          <Button asChild className="btn-gradient font-bold drop-shadow-neon-primary hover:drop-shadow-none">
+          <Button asChild className="btn-gradient font-bold shadow-neon-primary shadow-primary/80 hover:shadow-none">
             <Link href="/dashboard">Launch App</Link>
           </Button>
         </div>
@@ -153,7 +153,7 @@ export default function LandingPage() {
             <div className="inline-block bg-primary/10 border border-primary/30 rounded-full px-4 py-1 text-sm text-primary mb-4">
               A New Era of Gamified Wellness
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold font-headline mb-6 drop-shadow-neon-primary">
+            <h1 className="text-4xl md:text-6xl font-extrabold font-headline mb-6 drop-shadow-[0_0_12px_hsl(var(--primary))]">
               Build Habits. Earn Rewards.
               <br />
               Own Your Wellness.
@@ -350,7 +350,7 @@ export default function LandingPage() {
         <footer className="border-t border-border/20 py-12">
             <div className="container mx-auto px-4 text-center">
                  <div className="flex justify-center items-center gap-2 mb-4">
-                    <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-neon-primary" />
+                    <BodyBaseIcon className="w-8 h-8 text-primary drop-shadow-[0_0_12px_hsl(var(--primary))]" />
                     <span className="text-xl font-bold">BodyBase</span>
                 </div>
                 <p className="text-muted-foreground mb-6">Own your wellness. One block at a time.</p>
