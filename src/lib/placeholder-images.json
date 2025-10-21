@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-glow",
+      "description": "Glowing wellness illustration for hero section",
+      "imageUrl": "https://images.unsplash.com/photo-1624397100944-2fea9829bd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMHdlbGxuZXNzfGVufDB8fHx8MTc2MTAwODIzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract wellness"
+    },
+    {
+      "id": "screenshot-1",
+      "description": "App screenshot 1",
+      "imageUrl": "https://images.unsplash.com/photo-1758411898049-4de9588be514?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkYXNoYm9hcmQlMjBhcHB8ZW58MHx8fHwxNzYwOTg4NTY4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dashboard app"
+    },
+    {
+      "id": "screenshot-2",
+      "description": "App screenshot 2",
+      "imageUrl": "https://images.unsplash.com/photo-1697956767477-fd987f488f25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdGVwcyUyMHRyYWNrZXJ8ZW58MHx8fHwxNzYxMDA4MjMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "steps tracker"
+    },
+    {
+      "id": "screenshot-3",
+      "description": "App screenshot 3",
+      "imageUrl": "https://images.unsplash.com/photo-1729254363767-e186ed5d1b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmb29kJTIwbG9nfGVufDB8fHx8MTc2MTAwODIzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "food log"
+    },
+    {
+      "id": "testimonial-1",
+      "description": "Testimonial avatar 1",
+      "imageUrl": "https://images.unsplash.com/photo-1635131902146-6957477a4ff4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTc2MDk1NTA4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Testimonial avatar 2",
+      "imageUrl": "https://images.unsplash.com/photo-1542596594-649edbc13630?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBoYXBweXxlbnwwfHx8fDE3NjA5Nzk4MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person happy"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Testimonial avatar 3",
+      "imageUrl": "https://images.unsplash.com/photo-1607073806996-6583a2833865?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwcm9maWxlfGVufDB8fHx8MTc2MDk2NzQwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person profile"
+    }
+  ]
 }
