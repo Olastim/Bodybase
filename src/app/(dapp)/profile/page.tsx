@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const { ready, authenticated, user } = usePrivy();
   const { wallets } = useWallets();
 
-  const smartWallet = wallets.find((wallet) => wallet.walletClientType === 'privy' && wallet.connector?.id === 'io.privy.embedded');
+  const smartWallet = wallets.find((wallet) => wallet.walletClientType === 'privy');
 
   useEffect(() => {
     if (ready && !authenticated) {
