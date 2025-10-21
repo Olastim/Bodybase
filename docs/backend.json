@@ -6,17 +6,18 @@
       "type": "object",
       "description": "Represents a user in the BodyBase application.",
       "properties": {
-        "id": {
+        "uid": {
           "type": "string",
-          "description": "Unique identifier for the User entity."
+          "description": "The unique identifier from Firebase Authentication."
         },
         "username": {
           "type": "string",
           "description": "The user's chosen username, which must be unique."
         },
-        "passwordHash": {
+        "email": {
           "type": "string",
-          "description": "Hashed password for authentication.  NEVER store plain text passwords."
+          "format": "email",
+          "description": "The user's email address."
         },
         "walletAddress": {
           "type": "string",
@@ -34,13 +35,30 @@
         }
       },
       "required": [
-        "id",
+        "uid",
         "username",
-        "passwordHash",
+        "email",
         "walletAddress",
         "createdAt",
         "updatedAt"
       ]
+    },
+    "Username": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Username",
+      "type": "object",
+      "description": "Maps a unique username to a user's UID for easy lookup.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique identifier (from Firebase Auth)."
+        },
+        "walletAddress": {
+          "type": "string",
+          "description": "The user's wallet address on the Base network."
+        }
+      },
+      "required": ["uid", "walletAddress"]
     },
     "Step": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -255,8 +273,7 @@
   },
   "auth": {
     "providers": [
-      "password",
-      "anonymous"
+      "password"
     ]
   },
   "firestore": {
@@ -268,11 +285,27 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profile information, including username, password hash, and wallet address. This path enforces path-based ownership, ensuring only the authenticated user can access their own data.",
+          "description": "Stores user profile information, including username, email, and wallet address. This path enforces path-based ownership, ensuring only the authenticated user can access their own data.",
           "params": [
             {
               "name": "userId",
-              "description": "The unique identifier for the user."
+              "description": "The unique identifier for the user (matches Firebase Auth UID)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/usernames/{username}",
+        "definition": {
+          "entityName": "Username",
+          "schema": {
+            "$ref": "#/backend/entities/Username"
+          },
+          "description": "Stores a mapping from a unique, case-insensitive username to a user's UID and wallet address to ensure username uniqueness and allow for easy lookups.",
+          "params": [
+            {
+              "name": "username",
+              "description": "The user's unique, case-insensitive username."
             }
           ]
         }
@@ -394,6 +427,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure prioritizes security and scalability for the BodyBase application, especially concerning user authentication and data ownership. It leverages structural segregation and denormalization to ensure authorization independence and simple, robust security rules.\n\n*   **User Data:** User data, including usernames, password hashes, and wallet addresses, is stored in the `/users/{userId}` collection. This follows the recommended pattern for private data using path-based ownership, which ensures that only the authenticated user can access their own data. The username is stored alongside the wallet address to fulfill the requirement of mapping usernames to wallet addresses.\n*   **Step, FoodLog, SleepLog, UserReward and LeaderboardEntry:** Subcollections under `/users/{userId}` are used to store steps, food logs, sleep logs, rewards and leaderboard entries. This enforces clear ownership and simplifies security rules, as all data within these subcollections is inherently owned by the user identified by `{userId}`. This approach ensures that list operations are secure, as rules can easily filter based on the path.\n*   **Rewards:** The rewards themselves are stored in a flat `/rewards/{rewardId}` collection. This is because rewards are global and not user-specific. This allows for easy management of rewards without impacting user-specific data.\n\nThis design achieves Authorization Independence by avoiding the need for `get()` calls in security rules. All necessary authorization information (user ID) is embedded in the path. This simplifies rules and enhances the atomicity of operations. Structural Segregation is applied by separating user-specific data into subcollections, ensuring a homogeneous security posture for each collection."
+    "reasoning": "The Firestore structure is designed for a secure and scalable authentication and user management system. It separates user data from a username lookup table to enforce uniqueness efficiently.\n\n*   **User Data (`/users/{userId}`):** All private user information is stored in a document where the ID is the user's Firebase Authentication UID. This follows the best practice of path-based ownership, making security rules simple and robust. Only the authenticated user can access their own document.\n*   **Username Uniqueness (`/usernames/{username}`):** To enforce unique usernames and provide a simple lookup mechanism, a separate collection is used. The document ID is the lowercased username. This allows for a quick check for username existence during signup without needing complex queries. Storing the UID in this document creates a direct mapping back to the main user profile.\n*   **Subcollections:** Other user-specific data like steps, food logs, etc., are stored in subcollections under `/users/{userId}`, ensuring clear data ownership and simplifying security rules. All data within these subcollections is inherently owned by the user.\n\nThis design ensures Authorization Independence and Structural Segregation, which are key principles for secure and scalable Firestore applications."
   }
 }
