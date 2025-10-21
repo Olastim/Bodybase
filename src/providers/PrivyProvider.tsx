@@ -28,7 +28,7 @@ export function PrivyProvider({children}: {children: React.ReactNode}) {
         loginMethods: ['email'],
         embeddedWallets: {
           createOnLogin: 'users-without-wallets',
-          requireUserPasswordOnCreate: true,
+          requireUserPasswordOnCreate: false,
         },
         appearance: {
           theme: 'dark',
