@@ -1,7 +1,6 @@
 'use client';
 
-import { usePrivy } from '@privy-io/react-auth';
-import { useWallets } from '@privy-io/wagmi';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -1,7 +1,7 @@
 'use client';
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { BodyBaseIcon, FoodIcon, RewardIcon, SleepIcon, StepIcon } from '@/components/icons';
-import { LayoutDashboard, BarChart3, User, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, BarChart3, User, Settings, LogOut, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, tooltip: 'Dashboard' },
+  { href: '/wallet', label: 'Wallet', icon: Wallet, tooltip: 'Wallet' },
   { href: '/steps', label: 'Steps', icon: StepIcon, tooltip: 'Steps' },
   { href: '/food', label: 'Food', icon: FoodIcon, tooltip: 'Food' },
   { href: '/sleep', label: 'Sleep', icon: SleepIcon, tooltip: 'Sleep' },
