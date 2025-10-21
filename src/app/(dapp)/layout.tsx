@@ -1,8 +1,11 @@
+'use client';
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { BodyBaseIcon, FoodIcon, RewardIcon, SleepIcon, StepIcon } from '@/components/icons';
 import { LayoutDashboard, BarChart3, User, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, tooltip: 'Dashboard' },
@@ -18,6 +21,27 @@ export default function DappLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const { ready, authenticated, logout } = usePrivy();
+
+  useEffect(() => {
+    if (ready && !authenticated) {
+      router.push('/');
+    }
+  }, [ready, authenticated, router]);
+
+  const handleLogout = async () => {
+    await logout();
+  }
+
+  if (!ready || !authenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+  
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" className="border-r-border/50">
@@ -60,11 +84,9 @@ export default function DappLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Logout" className="text-red-400 hover:text-red-400 hover:bg-red-500/10">
-                  <Link href="/">
+                <SidebarMenuButton onClick={handleLogout} tooltip="Logout" className="text-red-400 hover:text-red-400 hover:bg-red-500/10">
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
-                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
           </SidebarMenu>

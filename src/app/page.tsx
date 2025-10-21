@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -24,6 +25,8 @@ import {
   StepIcon,
 } from '@/components/icons';
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
 
 const featureCards = [
   {
@@ -96,7 +99,7 @@ const faqItems = [
   {
     question: 'Do I need a crypto wallet to use BodyBase?',
     answer:
-      'Yes and no! You can sign up with a simple username and password. We automatically generate a secure wallet for you in the background, making your onboarding to Web3 seamless.',
+      "No! You can sign up with just an email. We automatically generate a secure smart wallet for you in the background, making your onboarding to Web3 seamless.",
   },
   {
     question: 'Are the rewards (points and badges) a cryptocurrency?',
@@ -117,6 +120,20 @@ const roadmapItems = [
 ];
 
 export default function LandingPage() {
+  const { ready, authenticated, login } = usePrivy();
+  const router = useRouter();
+
+  const handleLaunchApp = () => {
+    if (ready) {
+      if (authenticated) {
+        router.push('/dashboard');
+      } else {
+        login();
+      }
+    }
+  };
+
+
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-glow');
   const screenshots = [
     PlaceHolderImages.find((img) => img.id === 'screenshot-1'),
@@ -140,8 +157,8 @@ export default function LandingPage() {
             <Link href="#testimonials" className="hover:text-primary transition-colors">Testimonials</Link>
             <Link href="#faq" className="hover:text-primary transition-colors">FAQ</Link>
           </nav>
-          <Button asChild className="btn-gradient font-bold shadow-neon-primary shadow-primary/80 hover:shadow-none">
-            <Link href="/dashboard">Launch App</Link>
+          <Button onClick={handleLaunchApp} className="btn-gradient font-bold shadow-neon-primary shadow-primary/80 hover:shadow-none" disabled={!ready}>
+            Launch App
           </Button>
         </div>
       </header>
@@ -161,10 +178,9 @@ export default function LandingPage() {
             <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground mb-8">
               BodyBase transforms your health journey into a fun, rewarding adventure on the Base blockchain. Track, compete, and level up your life.
             </p>
-            <Button size="lg" asChild className="btn-gradient font-bold text-lg drop-shadow-neon-accent">
-              <Link href="/dashboard">
-                Start Your Journey <ArrowRight className="ml-2" />
-              </Link>
+            <Button size="lg" onClick={handleLaunchApp} className="btn-gradient font-bold text-lg drop-shadow-neon-accent" disabled={!ready}>
+              <span>Start Your Journey</span>
+              <ArrowRight className="ml-2" />
             </Button>
           </div>
           {heroImage && (

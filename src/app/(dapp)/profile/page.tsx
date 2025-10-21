@@ -1,36 +1,29 @@
 'use client';
 
-import { useUser } from '@/firebase';
-import { useWallet } from '@/hooks/use-wallet';
+import { usePrivy } from '@privy-io/react-auth';
+import { useWallets } from '@privy-io/wagmi';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ProfilePage() {
-  const { user, isUserLoading } = useUser();
-  const { wallet, isWalletLoading } = useWallet();
   const { toast } = useToast();
-  const firestore = useFirestore();
-  const [username, setUsername] = useState('');
-  
+  const router = useRouter();
+  const { ready, authenticated, user } = usePrivy();
+  const { wallets } = useWallets();
+
+  const smartWallet = wallets.find((wallet) => wallet.walletClientType === 'privy' && wallet.connector?.id === 'io.privy.embedded');
+
   useEffect(() => {
-    if (user) {
-      const fetchUsername = async () => {
-        const userDocRef = doc(firestore, 'users', user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setUsername(userDoc.data().username);
-        }
-      };
-      fetchUsername();
+    if (ready && !authenticated) {
+      router.push('/');
     }
-  }, [user, firestore]);
+  }, [ready, authenticated, router]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -39,20 +32,11 @@ export default function ProfilePage() {
     });
   };
 
-  if (isUserLoading || isWalletLoading) {
+  if (!ready || (ready && !authenticated)) {
     return (
        <div>
         <h1 className="text-3xl font-bold font-headline">Profile</h1>
         <p className="text-muted-foreground">Loading your profile...</p>
-      </div>
-    )
-  }
-
-  if (!user || !wallet) {
-    return (
-       <div>
-        <h1 className="text-3xl font-bold font-headline">Profile</h1>
-        <p className="text-muted-foreground">Please log in to view your profile.</p>
       </div>
     )
   }
@@ -67,22 +51,24 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="space-y-6">
            <div className="space-y-2">
-            <Label>Username</Label>
-            <p className="text-lg font-mono p-3 bg-muted rounded-md">{username}</p>
-          </div>
-          <div className="space-y-2">
             <Label>Email</Label>
-             <p className="text-lg font-mono p-3 bg-muted rounded-md">{user.email}</p>
+             <p className="text-lg font-mono p-3 bg-muted rounded-md">{user?.email?.address}</p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="walletAddress">Wallet Address</Label>
-            <div className="flex items-center gap-2">
-              <Input id="walletAddress" value={wallet.address} readOnly className="font-mono"/>
-              <Button variant="ghost" size="icon" onClick={() => handleCopy(wallet.address)}>
-                <Copy className="h-5 w-5" />
-              </Button>
-            </div>
-             <p className="text-xs text-muted-foreground">This is your unique address on the Base network.</p>
+            <Label htmlFor="walletAddress">Smart Wallet Address</Label>
+            {smartWallet ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <Input id="walletAddress" value={smartWallet.address} readOnly className="font-mono"/>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(smartWallet.address)}>
+                    <Copy className="h-5 w-5" />
+                  </Button>
+                </div>
+                 <p className="text-xs text-muted-foreground">This is your smart wallet address on the Base network.</p>
+              </>
+            ) : (
+               <p className="text-lg font-mono p-3 bg-muted rounded-md">Creating your smart wallet...</p>
+            )}
           </div>
         </CardContent>
       </Card>

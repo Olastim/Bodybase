@@ -1,13 +1,17 @@
+'use client';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { FoodIcon, SleepIcon, StepIcon } from "@/components/icons";
 import { Zap } from 'lucide-react';
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function DashboardPage() {
+  const { user } = usePrivy();
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Welcome back, CryptoFitGal!</h1>
+        <h1 className="text-3xl font-bold font-headline">Welcome back, {user?.email?.address ? user.email.address.split('@')[0] : 'user'}!</h1>
         <p className="text-muted-foreground">Here's your wellness summary for today.</p>
       </div>
 
