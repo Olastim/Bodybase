@@ -1,6 +1,6 @@
 'use client';
 
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,9 +14,10 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   const { ready, authenticated, user } = usePrivy();
-  const { wallets, ready: walletsReady } = useWallets();
 
-  const smartWallet = wallets.find((wallet) => wallet.connectorType === 'privy');
+  const smartWallet = user?.linkedAccounts.find(
+    (account) => account.type === 'smart_wallet'
+  );
 
   useEffect(() => {
     if (ready && !authenticated) {
@@ -55,7 +56,7 @@ export default function ProfilePage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="walletAddress">Smart Wallet Address</Label>
-            {walletsReady && smartWallet ? (
+            {ready && smartWallet ? (
               <>
                 <div className="flex items-center gap-2">
                   <Input id="walletAddress" value={smartWallet.address} readOnly className="font-mono"/>
